@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import acme.entities.shouts.XXX;
 import acme.entities.task.Task;
 import acme.framework.repositories.AbstractRepository;
 
@@ -38,5 +39,23 @@ public interface AdministratorDashboardRepository extends AbstractRepository {
 
 	@Query("select min(t.workload) from Task t")
 	Double minWorkload();
+	
+	@Query("select count(x.finalisao) from XXX x where x.finalisao = TRUE")
+	List<XXX> getFinalisao();
+	
+	@Query("select avg(x.dinero) from XXX x where x.dinero.CURRENCY = 'EUR'")
+	Double mediaEUR();
+	
+	@Query("select avg(x.dinero) from XXX x where x.dinero.CURRENCY = 'USD'")
+	Double mediaUSD();
+	
+	@Query("select stddev(x.dinero) from XXX x where x.dinero.CURRENCY = 'EUR'")
+	Double deviationEUR();
+	
+	@Query("select stddev(x.dinero) from XXX x where x.dinero.CURRENCY = 'USD'")
+	Double deviationUSD();
+	
+	@Query("SELECT s FROM Shout s")
+	List<Task> findAllShouts();
 
 }

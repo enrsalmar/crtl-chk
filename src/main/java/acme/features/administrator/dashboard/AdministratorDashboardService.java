@@ -36,7 +36,7 @@ public class AdministratorDashboardService implements AbstractShowService<Admini
 		request.unbind(entity, model, //
 			"publicTasks", "privateTasks", "ongoingTasks", "finishedTasks", "averageExecTime", //
 			"deviationExecTime", "maxExecTime", "minExecTime", "averageWorkload", "deviationWorkload",//
-			"maxWorkload", "minWorkload");
+			"maxWorkload", "minWorkload","ratioFinalisao", "mediaEUR", "mediaUSD", "deviationEUR", "deviationUSD");
 	}
 
 	@Override
@@ -55,7 +55,13 @@ public class AdministratorDashboardService implements AbstractShowService<Admini
 		Double deviationWorkload;
 		Double maxWorkload;
 		Double minWorkload;
+		Double ratioFinalisao;
+		Double mediaEUR;
+		Double mediaUSD;		
+		Double deviationEUR;		
+		Double deviationUSD; 
 		List<Task> tasks;
+		Integer totalShouts;
 
 		publicTasks = this.repository.publicTasks();
 		privateTasks = this.repository.privateTasks();
@@ -71,6 +77,12 @@ public class AdministratorDashboardService implements AbstractShowService<Admini
 		minExecTime = tasks.stream().min(cmp).get().getExecutionTime();
 		averageExecTime = tasks.stream().mapToDouble(Task::getExecutionTime).average().getAsDouble();
 		deviationExecTime = Math.sqrt(tasks.stream().mapToDouble(Task::getExecutionTime).map(i -> (i - averageExecTime)).map(i -> i * i).average().getAsDouble());
+		totalShouts = this.repository.findAllShouts().size();
+		ratioFinalisao = (double) (this.repository.getFinalisao().size() / totalShouts);
+		mediaEUR = this.repository.mediaEUR();
+		mediaUSD = this.repository.mediaUSD();
+		deviationEUR = this.repository.deviationEUR();
+		deviationUSD = this.repository.deviationUSD();
 
 		result = new Dashboard();
 		result.setPublicTasks(publicTasks);
@@ -85,6 +97,11 @@ public class AdministratorDashboardService implements AbstractShowService<Admini
 		result.setDeviationWorkload(deviationWorkload);
 		result.setMaxWorkload(maxWorkload);
 		result.setMinWorkload(minWorkload);
+		result.setRatioFinalisao(ratioFinalisao);
+		result.setMediaEUR(mediaEUR);
+		result.setMediaUSD(mediaUSD);
+		result.setDeviationEUR(deviationEUR);
+		result.setDeviationUSD(deviationUSD);
 		return result;
 	}
 
